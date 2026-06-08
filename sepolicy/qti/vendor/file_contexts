@@ -1,0 +1,2 @@
+# Bluetooth
+/vendor/bin/hw/android\.hardware\.bluetooth-service\.essential        u:object_r:hal_bluetooth_default_exec:s0
