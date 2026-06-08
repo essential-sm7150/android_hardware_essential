@@ -3,7 +3,7 @@ package {
 }
 
 cc_defaults {
-    name: "android.hardware.bluetooth-service-build-defaults.nxp",
+    name: "android.hardware.bluetooth-service-build-defaults.essential",
     cflags: [
         "-Wall",
         "-Wextra",
@@ -24,10 +24,10 @@ cc_defaults {
 }
 
 cc_library_static {
-    name: "libbluetoothhcihalimplnxp",
+    name: "libbluetoothhcihalimplessential",
     vendor_available: true,
     host_supported: true,
-    defaults: ["android.hardware.bluetooth-service-build-defaults.nxp"],
+    defaults: ["android.hardware.bluetooth-service-build-defaults.essential"],
     srcs: [
         "BluetoothHci.cpp",
         "vendor_interface.cc",
@@ -36,12 +36,12 @@ cc_library_static {
 }
 
 cc_binary {
-    name: "android.hardware.bluetooth-service.default.nxp",
+    name: "android.hardware.bluetooth-service.essential",
     relative_install_path: "hw",
-    init_rc: ["bluetooth-service-default-nxp.rc"],
-    vintf_fragments: [":manifest_android.hardware.bluetooth-service.default.nxp.xml"],
+    init_rc: ["bluetooth-service-essential.rc"],
+    vintf_fragments: [":manifest_android.hardware.bluetooth-service.essential.xml"],
     vendor: true,
-    defaults: ["android.hardware.bluetooth-service-build-defaults.nxp"],
+    defaults: ["android.hardware.bluetooth-service-build-defaults.essential"],
     srcs: [
         "service.cpp",
     ],
@@ -54,11 +54,11 @@ cc_binary {
         "liblog",
     ],
     static_libs: [
-        "libbluetoothhcihalimplnxp",
+        "libbluetoothhcihalimplessential",
     ],
 }
 
 filegroup {
-    name: "manifest_android.hardware.bluetooth-service.default.nxp.xml",
-    srcs: ["bluetooth-service-default-nxp.xml"],
+    name: "manifest_android.hardware.bluetooth-service.essential.xml",
+    srcs: ["bluetooth-service-essential.xml"],
 }
