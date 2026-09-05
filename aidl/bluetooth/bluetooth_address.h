@@ -26,7 +26,7 @@ class BluetoothAddress {
   public:
     static constexpr size_t kBytes = 6;
 
-    static bool get_local_address(uint8_t* addr);
+    static void get_local_address(uint8_t* addr);
 };
 
 }  // namespace aidl::android::hardware::bluetooth::impl

@@ -23,34 +23,45 @@
 #include <unistd.h>
 #include <utils/Log.h>
 
+using aidl::android::hardware::bluetooth::impl::BluetoothAddress;
+
 namespace {
 constexpr char kNvPath[] = "/mnt/vendor/persist/bluetooth/.bt_nv.bin";
 constexpr size_t kNvPathSize = 9;
+constexpr uint8_t kDefaultAddress[BluetoothAddress::kBytes] = {0xDE, 0xAD, 0xBE, 0xEF, 0x00, 0x11};
 }  // namespace
 
 namespace aidl::android::hardware::bluetooth::impl {
 
-bool BluetoothAddress::get_local_address(uint8_t* local_addr) {
+void BluetoothAddress::get_local_address(uint8_t* local_addr) {
     int addr_fd = open(kNvPath, O_RDONLY);
-    if (addr_fd != -1) {
-        char address[kNvPathSize] = {0};
-        int bytes_read = read(addr_fd, address, kNvPathSize);
-        if (bytes_read == -1) {
-            ALOGE("%s: Error reading address from %s: %s", __func__, kNvPath, strerror(errno));
-        }
-        close(addr_fd);
-
-        // Swap into local_addr
-        local_addr[0] = address[8];
-        local_addr[1] = address[7];
-        local_addr[2] = address[6];
-        local_addr[3] = address[5];
-        local_addr[4] = address[4];
-        local_addr[5] = address[3];
-
-        return true;
+    if (addr_fd == -1) {
+        ALOGW("%s: %s does not exist (%s), using default address", __func__, kNvPath,
+              strerror(errno));
+        memcpy(local_addr, kDefaultAddress, sizeof(kDefaultAddress));
+        return;
     }
-    return false;
+
+    char address[kNvPathSize] = {0};
+    int bytes_read = read(addr_fd, address, kNvPathSize);
+    close(addr_fd);
+
+    if (bytes_read == -1) {
+        ALOGE("%s: Error reading address from %s: %s, using default address", __func__, kNvPath,
+              strerror(errno));
+        memcpy(local_addr, kDefaultAddress, sizeof(kDefaultAddress));
+        return;
+    }
+
+    // Swap into local_addr
+    local_addr[0] = address[8];
+    local_addr[1] = address[7];
+    local_addr[2] = address[6];
+    local_addr[3] = address[5];
+    local_addr[4] = address[4];
+    local_addr[5] = address[3];
+
+    return;
 }
 
 }  // namespace aidl::android::hardware::bluetooth::impl
